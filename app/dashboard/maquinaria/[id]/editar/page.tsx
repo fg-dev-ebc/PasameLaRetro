@@ -9,13 +9,14 @@ type EditEquipmentPageProps = {
 
 export default async function EditEquipmentPage({ params }: EditEquipmentPageProps) {
   const { id } = await params
-  const [{ user }, categories, equipment] = await Promise.all([
+  const [{ user, profile }, categories, equipment] = await Promise.all([
     getCurrentUserProfile(),
     getCategories(),
     getEquipmentForEdit(id),
   ])
 
   if (!user) redirect(`/login?next=/dashboard/maquinaria/${id}/editar`)
+  if (profile?.role !== "owner") redirect("/dashboard")
   if (!equipment) notFound()
 
   return (

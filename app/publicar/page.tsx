@@ -5,12 +5,16 @@ import { getCategories, getCurrentUserProfile } from "@/lib/queries"
 
 export default async function PublishPage() {
   console.log("[PublishPage] Cargando pagina de publicar")
-  const [{ user }, categories] = await Promise.all([getCurrentUserProfile(), getCategories()])
-  console.log("[PublishPage] Usuario:", user ? user.id : "no autenticado")
+  const [{ user, profile }, categories] = await Promise.all([getCurrentUserProfile(), getCategories()])
+  console.log("[PublishPage] Usuario:", user ? user.id : "no autenticado", "rol:", profile?.role)
   console.log("[PublishPage] Categorias cargadas:", categories.length)
   if (!user) {
     console.log("[PublishPage] Redirigiendo a login")
     redirect("/login?next=/publicar")
+  }
+  if (profile?.role !== "owner") {
+    console.log("[PublishPage] Redirigiendo a dashboard - no es owner")
+    redirect("/dashboard")
   }
 
   return (

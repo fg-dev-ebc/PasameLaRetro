@@ -22,7 +22,7 @@ export default async function HomePage() {
               Maquinaria disponible, agenda clara, operacion sin friccion.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              PasameLaRetro conecta owners con maquinaria lista para obra y renters que necesitan disponibilidad real por horas.
+              PasameLaRetro conecta dueños de maquinaria con contratistas que necesitan disponibilidad real por horas.
             </p>
             <div className="mt-10 max-w-2xl">
               <SearchBar large />
@@ -91,7 +91,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-px bg-border lg:grid-cols-3">
           {[
-            { icon: ShieldCheck, title: "Operacion segura", text: "Owners y renters mantienen control sobre publicaciones, agenda y solicitudes." },
+            { icon: ShieldCheck, title: "Operacion segura", text: "Dueños y contratistas mantienen control sobre publicaciones, agenda y solicitudes." },
             { icon: CalendarCheck, title: "Agenda validada", text: "Las reservas pasan por reglas de disponibilidad y bloqueo de solapes." },
             { icon: Truck, title: "Inventario real", text: "Publicaciones activas, fichas completas y control operativo desde el dashboard." },
           ].map((item) => (

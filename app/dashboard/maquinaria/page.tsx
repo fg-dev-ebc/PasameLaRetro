@@ -11,8 +11,9 @@ import { statusLabels } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 export default async function DashboardEquipmentPage() {
-  const { user } = await getCurrentUserProfile()
+  const { user, profile } = await getCurrentUserProfile()
   if (!user) redirect("/login?next=/dashboard/maquinaria")
+  if (profile?.role !== "owner") redirect("/dashboard")
 
   const equipment = await getOwnerEquipment()
 

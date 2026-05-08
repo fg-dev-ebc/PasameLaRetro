@@ -9,9 +9,10 @@ type AvailabilityPageProps = {
 
 export default async function AvailabilityPage({ params }: AvailabilityPageProps) {
   const { id } = await params
-  const [{ user }, equipment] = await Promise.all([getCurrentUserProfile(), getEquipmentForEdit(id)])
+  const [{ user, profile }, equipment] = await Promise.all([getCurrentUserProfile(), getEquipmentForEdit(id)])
 
   if (!user) redirect(`/login?next=/dashboard/maquinaria/${id}/horarios`)
+  if (profile?.role !== "owner") redirect("/dashboard")
   if (!equipment) notFound()
 
   return (

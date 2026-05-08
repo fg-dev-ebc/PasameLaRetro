@@ -70,7 +70,13 @@ export async function createEquipmentAction(
       console.log("[createEquipmentAction] ERROR - Usuario no autenticado")
       return { message: "Inicia sesion para publicar maquinaria." }
     }
-    console.log("[createEquipmentAction] Usuario autenticado:", user.id)
+
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+    if (profile?.role !== "owner") {
+      console.log("[createEquipmentAction] ERROR - Rol no es owner:", profile?.role)
+      return { message: "Solo los dueños de maquinaria pueden publicar ofertas." }
+    }
+    console.log("[createEquipmentAction] Usuario autenticado:", user.id, "rol:", profile?.role)
 
     const rawData = {
       title: formData.get("title"),
@@ -202,6 +208,16 @@ export async function updateEquipmentAction(
   formData: FormData
 ): Promise<ActionState> {
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { message: "Inicia sesion para editar maquinaria." }
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+  if (profile?.role !== "owner") {
+    return { message: "Solo los dueños de maquinaria pueden editar ofertas." }
+  }
+
   const parsed = equipmentSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
@@ -251,6 +267,16 @@ export async function updateAvailabilityAction(
   formData: FormData
 ): Promise<ActionState> {
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { message: "Inicia sesion para editar horarios." }
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+  if (profile?.role !== "owner") {
+    return { message: "Solo los dueños de maquinaria pueden editar horarios." }
+  }
+
   const rules = getAvailabilityRules(formData)
 
   if (rules.length === 0) {
@@ -289,6 +315,14 @@ export async function deleteEquipmentAction(formData: FormData) {
   const supabase = await createClient()
 
   if (!equipmentId) return
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+  if (profile?.role !== "owner") return
 
   await supabase.from("equipment").delete().eq("id", equipmentId)
   revalidatePath("/dashboard")

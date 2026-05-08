@@ -17,7 +17,7 @@ const signInSchema = z.object({
 
 const signUpSchema = signInSchema.extend({
   full_name: z.string().min(2, "Agrega tu nombre"),
-  role: z.enum(["owner", "renter", "both"]),
+  role: z.enum(["owner", "renter"]),
 })
 
 async function getOrigin() {

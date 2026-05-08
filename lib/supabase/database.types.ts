@@ -9,280 +9,280 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      profiles: {
+      availability_exceptions: {
         Row: {
-          id: string
-          full_name: string | null
-          company_name: string | null
-          role: Database["public"]["Enums"]["user_role"]
-          phone: string | null
-          location: string | null
-          avatar_url: string | null
           created_at: string
+          end_time: string | null
+          equipment_id: string
+          exception_date: string
+          id: string
+          is_available: boolean
+          note: string | null
+          start_time: string | null
+        }
+        Insert: {
+          created_at?: string
+          end_time?: string | null
+          equipment_id: string
+          exception_date: string
+          id?: string
+          is_available?: boolean
+          note?: string | null
+          start_time?: string | null
+        }
+        Update: {
+          created_at?: string
+          end_time?: string | null
+          equipment_id?: string
+          exception_date?: string
+          id?: string
+          is_available?: boolean
+          note?: string | null
+          start_time?: string | null
+        }
+      }
+      availability_rules: {
+        Row: {
+          created_at: string
+          end_time: string
+          equipment_id: string
+          id: string
+          is_available: boolean
+          start_time: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          equipment_id: string
+          id?: string
+          is_available?: boolean
+          start_time: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          equipment_id?: string
+          id?: string
+          is_available?: boolean
+          start_time?: string
+          weekday?: number
+        }
+      }
+      bookings: {
+        Row: {
+          created_at: string
+          end_at: string
+          equipment_id: string
+          id: string
+          notes: string | null
+          owner_id: string
+          renter_id: string
+          start_at: string
+          status: Database["public"]["Enums"]["booking_status"]
+          total_price: number
           updated_at: string
         }
         Insert: {
-          id: string
-          full_name?: string | null
-          company_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          phone?: string | null
-          location?: string | null
-          avatar_url?: string | null
           created_at?: string
+          end_at: string
+          equipment_id: string
+          id?: string
+          notes?: string | null
+          owner_id: string
+          renter_id: string
+          start_at: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price?: number
           updated_at?: string
         }
         Update: {
-          id?: string
-          full_name?: string | null
-          company_name?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          phone?: string | null
-          location?: string | null
-          avatar_url?: string | null
           created_at?: string
+          end_at?: string
+          equipment_id?: string
+          id?: string
+          notes?: string | null
+          owner_id?: string
+          renter_id?: string
+          start_at?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price?: number
           updated_at?: string
         }
       }
       categories: {
         Row: {
+          created_at: string
+          description: string | null
           id: string
           name: string
           slug: string
-          description: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string
+          description?: string | null
           id?: string
           name: string
           slug: string
-          description?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string
+          description?: string | null
           id?: string
           name?: string
           slug?: string
-          description?: string | null
-          created_at?: string
         }
       }
       equipment: {
         Row: {
-          id: string
-          owner_id: string
           category_id: string | null
-          title: string
-          description: string
-          price_per_hour: number
-          price_per_day: number | null
-          deposit_amount: number | null
-          currency: string
-          condition: Database["public"]["Enums"]["equipment_condition"]
-          status: Database["public"]["Enums"]["equipment_status"]
-          location: string
           city: string | null
-          state: string | null
-          specs: Json
-          min_rental_hours: number
+          condition: Database["public"]["Enums"]["equipment_condition"]
           created_at: string
+          currency: string
+          deposit_amount: number | null
+          description: string
+          id: string
+          location: string
+          min_rental_hours: number
+          owner_id: string
+          price_per_day: number | null
+          price_per_hour: number
+          specs: Json
+          state: string | null
+          status: Database["public"]["Enums"]["equipment_status"]
+          title: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          owner_id: string
           category_id?: string | null
-          title: string
-          description: string
-          price_per_hour: number
-          price_per_day?: number | null
-          deposit_amount?: number | null
-          currency?: string
-          condition?: Database["public"]["Enums"]["equipment_condition"]
-          status?: Database["public"]["Enums"]["equipment_status"]
-          location: string
           city?: string | null
-          state?: string | null
-          specs?: Json
-          min_rental_hours?: number
+          condition?: Database["public"]["Enums"]["equipment_condition"]
           created_at?: string
+          currency?: string
+          deposit_amount?: number | null
+          description: string
+          id?: string
+          location: string
+          min_rental_hours?: number
+          owner_id: string
+          price_per_day?: number | null
+          price_per_hour: number
+          specs?: Json
+          state?: string | null
+          status?: Database["public"]["Enums"]["equipment_status"]
+          title: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          owner_id?: string
           category_id?: string | null
-          title?: string
-          description?: string
-          price_per_hour?: number
-          price_per_day?: number | null
-          deposit_amount?: number | null
-          currency?: string
-          condition?: Database["public"]["Enums"]["equipment_condition"]
-          status?: Database["public"]["Enums"]["equipment_status"]
-          location?: string
           city?: string | null
-          state?: string | null
-          specs?: Json
-          min_rental_hours?: number
+          condition?: Database["public"]["Enums"]["equipment_condition"]
           created_at?: string
+          currency?: string
+          deposit_amount?: number | null
+          description?: string
+          id?: string
+          location?: string
+          min_rental_hours?: number
+          owner_id?: string
+          price_per_day?: number | null
+          price_per_hour?: number
+          specs?: Json
+          state?: string | null
+          status?: Database["public"]["Enums"]["equipment_status"]
+          title?: string
           updated_at?: string
         }
       }
       equipment_images: {
         Row: {
-          id: string
-          equipment_id: string
-          path: string
-          public_url: string
           alt_text: string | null
-          position: number
           created_at: string
-        }
-        Insert: {
-          id?: string
           equipment_id: string
+          id: string
           path: string
+          position: number
           public_url: string
+        }
+        Insert: {
           alt_text?: string | null
-          position?: number
           created_at?: string
+          equipment_id: string
+          id?: string
+          path: string
+          position?: number
+          public_url: string
         }
         Update: {
-          id?: string
+          alt_text?: string | null
+          created_at?: string
           equipment_id?: string
+          id?: string
           path?: string
-          public_url?: string
-          alt_text?: string | null
           position?: number
-          created_at?: string
-        }
-      }
-      availability_rules: {
-        Row: {
-          id: string
-          equipment_id: string
-          weekday: number
-          start_time: string
-          end_time: string
-          is_available: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          equipment_id: string
-          weekday: number
-          start_time: string
-          end_time: string
-          is_available?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          equipment_id?: string
-          weekday?: number
-          start_time?: string
-          end_time?: string
-          is_available?: boolean
-          created_at?: string
-        }
-      }
-      availability_exceptions: {
-        Row: {
-          id: string
-          equipment_id: string
-          exception_date: string
-          start_time: string | null
-          end_time: string | null
-          is_available: boolean
-          note: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          equipment_id: string
-          exception_date: string
-          start_time?: string | null
-          end_time?: string | null
-          is_available?: boolean
-          note?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          equipment_id?: string
-          exception_date?: string
-          start_time?: string | null
-          end_time?: string | null
-          is_available?: boolean
-          note?: string | null
-          created_at?: string
-        }
-      }
-      bookings: {
-        Row: {
-          id: string
-          equipment_id: string
-          owner_id: string
-          renter_id: string
-          start_at: string
-          end_at: string
-          status: Database["public"]["Enums"]["booking_status"]
-          total_price: number
-          notes: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          equipment_id: string
-          owner_id: string
-          renter_id: string
-          start_at: string
-          end_at: string
-          status?: Database["public"]["Enums"]["booking_status"]
-          total_price?: number
-          notes?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          equipment_id?: string
-          owner_id?: string
-          renter_id?: string
-          start_at?: string
-          end_at?: string
-          status?: Database["public"]["Enums"]["booking_status"]
-          total_price?: number
-          notes?: string | null
-          created_at?: string
-          updated_at?: string
+          public_url?: string
         }
       }
       favorites: {
         Row: {
-          user_id: string
-          equipment_id: string
           created_at: string
+          equipment_id: string
+          user_id: string
         }
         Insert: {
-          user_id: string
-          equipment_id: string
           created_at?: string
+          equipment_id: string
+          user_id: string
         }
         Update: {
-          user_id?: string
-          equipment_id?: string
           created_at?: string
+          equipment_id?: string
+          user_id?: string
+        }
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          location: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
         }
       }
     }
     Enums: {
-      user_role: "owner" | "renter" | "both"
+      booking_status: "pending" | "confirmed" | "cancelled" | "completed" | "rejected"
       equipment_condition: "new" | "excellent" | "good" | "fair" | "needs_service"
       equipment_status: "active" | "paused" | "maintenance" | "archived"
-      booking_status: "pending" | "confirmed" | "cancelled" | "completed" | "rejected"
+      user_role: "owner" | "renter"
     }
     Functions: {
       is_equipment_available: {
@@ -293,14 +293,19 @@ export type Database = {
   }
 }
 
-export type Tables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Row"]
+type DefaultSchema = Database["public"]
 
-export type TablesInsert<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Insert"]
+export type Tables<
+  TableName extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"]),
+> = (DefaultSchema["Tables"] & DefaultSchema["Views"])[TableName] extends { Row: infer R }
+  ? R
+  : never
 
-export type TablesUpdate<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Update"]
+export type TablesInsert<TableName extends keyof DefaultSchema["Tables"]> =
+  DefaultSchema["Tables"][TableName] extends { Insert: infer I } ? I : never
 
-export type Enums<T extends keyof Database["public"]["Enums"]> =
-  Database["public"]["Enums"][T]
+export type TablesUpdate<TableName extends keyof DefaultSchema["Tables"]> =
+  DefaultSchema["Tables"][TableName] extends { Update: infer U } ? U : never
+
+export type Enums<EnumName extends keyof DefaultSchema["Enums"]> =
+  DefaultSchema["Enums"][EnumName]

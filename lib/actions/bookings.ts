@@ -34,6 +34,11 @@ export async function createBookingAction(
     return { message: "Inicia sesion para agendar." }
   }
 
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+  if (profile?.role !== "renter") {
+    return { message: "Solo los contratistas pueden agendar maquinaria." }
+  }
+
   const { data: equipment } = await supabase
     .from("equipment")
     .select("owner_id")
@@ -74,6 +79,17 @@ export async function updateBookingStatusAction(formData: FormData) {
   }
 
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+
+  if (status === "confirmed" || status === "rejected" || status === "completed") {
+    if (profile?.role !== "owner") return
+  }
+
   await supabase.from("bookings").update({ status }).eq("id", bookingId)
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/reservas")

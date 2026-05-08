@@ -24,9 +24,8 @@ export const bookingStatusLabels: Record<Enums<"booking_status">, string> = {
 }
 
 export const roleLabels: Record<Enums<"user_role">, string> = {
-  owner: "Publico maquinaria",
-  renter: "Rento maquinaria",
-  both: "Publico y rento",
+  owner: "Dueño de maquinaria",
+  renter: "Contratista",
 }
 
 export const weekdays = [
