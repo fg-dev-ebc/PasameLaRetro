@@ -278,6 +278,9 @@ export type Database = {
         }
       }
     }
+    Views: {
+      [_ in never]: never
+    }
     Enums: {
       booking_status: "pending" | "confirmed" | "cancelled" | "completed" | "rejected"
       equipment_condition: "new" | "excellent" | "good" | "fair" | "needs_service"
