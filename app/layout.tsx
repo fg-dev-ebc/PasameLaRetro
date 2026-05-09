@@ -19,8 +19,26 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pasamelaretro.vercel.app"),
   title: "PasameLaRetro | Renta premium de maquinaria",
   description: "Marketplace profesional para publicar, rentar y agendar maquinaria.",
+  generator: "Next.js",
+  keywords: ["renta de maquinaria", "retroexcavadoras", "gruas", "montacargas", "maquinaria pesada", "Mexico"],
+  applicationName: "PasameLaRetro",
+  authors: [{ name: "PasameLaRetro" }],
+  creator: "PasameLaRetro",
+  publisher: "PasameLaRetro",
+  alternates: {
+    canonical: "https://pasamelaretro.vercel.app",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
   icons: {
-    icon: "/icon.svg",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
   openGraph: {
     title: "PasameLaRetro | Renta de maquinaria sin vueltas",
@@ -29,20 +47,21 @@ export const metadata: Metadata = {
     siteName: "PasameLaRetro",
     images: [
       {
-        url: "/pasamelaretro-hero.jpg",
+        url: "https://pasamelaretro.vercel.app/pasamelaretro-logo2.png",
         width: 1536,
         height: 864,
         alt: "Pasame La Retro",
       },
     ],
     locale: "es_MX",
+    alternateLocale: ["es_MX", "es_ES"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "PasameLaRetro | Renta de maquinaria sin vueltas",
     description: "Encuentra maquinaria disponible, revisa horarios y agenda directo con el dueño.",
-    images: ["/pasamelaretro-hero.jpg"],
+    images: ["https://pasamelaretro.vercel.app/pasamelaretro-logo2.png"],
   },
 };
 
