@@ -1,5 +1,6 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
@@ -8,6 +9,7 @@ import type { ActionState } from "@/lib/actions/types"
 
 const emailSchema = z.string().email("Email invalido")
 const passwordSchema = z.string().min(6, "Minimo 6 caracteres")
+const roleSchema = z.enum(["owner", "renter"])
 
 const signInSchema = z.object({
   email: emailSchema,
@@ -16,7 +18,7 @@ const signInSchema = z.object({
 
 const signUpSchema = signInSchema.extend({
   full_name: z.string().min(2, "Agrega tu nombre"),
-  role: z.enum(["owner", "renter"]),
+  role: roleSchema,
 })
 
 async function getOrigin() {
@@ -75,8 +77,23 @@ export async function signUpAction(_state: ActionState, formData: FormData): Pro
   redirect("/dashboard")
 }
 
-export async function signInWithGoogleAction() {
+export async function signInWithGoogleAction(formData?: FormData) {
   const origin = await getOrigin()
+  const parsedRole = roleSchema.safeParse(formData?.get("role"))
+  const cookieStore = await cookies()
+
+  if (parsedRole.success) {
+    cookieStore.set("oauth_role", parsedRole.data, {
+      httpOnly: true,
+      maxAge: 10 * 60,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    })
+  } else {
+    cookieStore.delete("oauth_role")
+  }
+
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
