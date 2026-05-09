@@ -32,7 +32,7 @@ export default async function DashboardPage() {
         ) : null}
       </div>
 
-      <div className="grid gap-px bg-border md:grid-cols-3">
+      <div className={cn("grid gap-px bg-border", isOwner ? "md:grid-cols-3" : "md:grid-cols-1")}>
         {isOwner ? <Metric title="Publicaciones" value={equipment.length} icon={Truck} /> : null}
         {isOwner ? <Metric title="Reservas recibidas" value={received.length} icon={CalendarCheck} /> : null}
         <Metric title="Reservas hechas" value={requested.length} icon={CalendarCheck} />
