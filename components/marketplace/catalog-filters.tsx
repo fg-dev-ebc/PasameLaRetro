@@ -21,7 +21,7 @@ export function CatalogFilters({ categories, filters }: CatalogFiltersProps) {
 
         <div className="space-y-2">
           <Label htmlFor="q">Busqueda</Label>
-          <Input id="q" name="q" defaultValue={filters.q} placeholder="Modelo, uso, zona" />
+          <Input id="q" name="q" defaultValue={filters.q} placeholder="Modelo, uso, zona" className="rounded-none" />
         </div>
 
         <div className="space-y-2">
@@ -46,17 +46,17 @@ export function CatalogFilters({ categories, filters }: CatalogFiltersProps) {
 
         <div className="space-y-2">
           <Label htmlFor="location">Ubicacion</Label>
-          <Input id="location" name="location" defaultValue={filters.location} placeholder="CDMX, Monterrey" />
+          <Input id="location" name="location" defaultValue={filters.location} placeholder="CDMX, Monterrey" className="rounded-none" />
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label htmlFor="min">Min/h</Label>
-            <Input id="min" name="min" type="number" min="0" defaultValue={filters.min} />
+            <Input id="min" name="min" type="number" min="0" defaultValue={filters.min} className="rounded-none" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="max">Max/h</Label>
-            <Input id="max" name="max" type="number" min="0" defaultValue={filters.max} />
+            <Input id="max" name="max" type="number" min="0" defaultValue={filters.max} className="rounded-none" />
           </div>
         </div>
 
