@@ -25,10 +25,12 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
   const action = equipment ? updateEquipmentAction.bind(null, equipment.id) : createEquipmentAction
   const [state, formAction] = useActionState(action, initialActionState)
   const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [isUploadingImages, setIsUploadingImages] = useState(false)
   const [uploadMessage, setUploadMessage] = useState<string>()
   const uploadedEquipmentId = useRef<string | null>(null)
 
   const modeLabel = equipment ? "edicion" : "creacion"
+  const values = state.values ?? {}
   console.log(`[ProductForm] Render - Modo: ${modeLabel}`, equipment ? { id: equipment.id } : "nuevo")
 
   if (state.message) {
@@ -53,13 +55,14 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
         return
       }
 
-      setUploadMessage("Subiendo imagenes...")
+      setIsUploadingImages(true)
       const supabase = createClient()
       const {
         data: { user },
       } = await supabase.auth.getUser()
 
       if (!user) {
+        setIsUploadingImages(false)
         setUploadMessage("La maquinaria se publico, pero la sesion expiro antes de subir imagenes.")
         return
       }
@@ -68,6 +71,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
 
       for (const [position, file] of imageFiles.slice(0, 8).entries()) {
         if (file.size > 10 * 1024 * 1024) {
+          setIsUploadingImages(false)
           setUploadMessage("Cada imagen debe pesar maximo 10 MB.")
           return
         }
@@ -78,6 +82,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
         const { error } = await supabase.storage.from("equipment-images").upload(path, file, { upsert: false })
 
         if (error) {
+          setIsUploadingImages(false)
           setUploadMessage("La maquinaria se publico, pero no pudimos subir todas las imagenes.")
           return
         }
@@ -93,6 +98,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
 
       const imageState = await saveEquipmentImagesAction(equipmentId, uploadedImages)
       if (!imageState.ok) {
+        setIsUploadingImages(false)
         setUploadMessage(imageState.message ?? "La maquinaria se publico, pero no pudimos guardar las imagenes.")
         return
       }
@@ -132,19 +138,19 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           <FormMessage message={uploadMessage ?? state.message} />
           <div className="space-y-2">
             <Label htmlFor="title">Titulo</Label>
-            <Input id="title" name="title" defaultValue={equipment?.title} required placeholder="Excavadora 320 GC lista para obra" className="rounded-none" />
+            <Input id="title" name="title" defaultValue={values.title ?? equipment?.title} required placeholder="Excavadora 320 GC lista para obra" className="rounded-none" />
             <FormMessage message={state.errors?.title?.[0]} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Descripcion</Label>
-            <Textarea id="description" name="description" defaultValue={equipment?.description} required rows={7} placeholder="Capacidad, operador incluido, restricciones, mantenimiento y condiciones de entrega." className="rounded-none" />
+            <Textarea id="description" name="description" defaultValue={values.description ?? equipment?.description} required rows={7} placeholder="Capacidad, operador incluido, restricciones, mantenimiento y condiciones de entrega." className="rounded-none" />
             <FormMessage message={state.errors?.description?.[0]} />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="category_id">Categoria</Label>
-              <select id="category_id" name="category_id" defaultValue={equipment?.category_id ?? ""} required className="h-9 w-full rounded-none border bg-background px-3 text-sm">
+              <select id="category_id" name="category_id" defaultValue={values.category_id ?? equipment?.category_id ?? ""} required className="h-9 w-full rounded-none border bg-background px-3 text-sm">
                 <option value="" disabled>Selecciona</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name}</option>
@@ -153,7 +159,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="condition">Condicion</Label>
-              <select id="condition" name="condition" defaultValue={equipment?.condition ?? "good"} className="h-9 w-full rounded-none border bg-background px-3 text-sm">
+              <select id="condition" name="condition" defaultValue={values.condition ?? equipment?.condition ?? "good"} className="h-9 w-full rounded-none border bg-background px-3 text-sm">
                 {Object.entries(conditionLabels).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
@@ -164,7 +170,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           {equipment ? (
             <div className="space-y-2">
               <Label htmlFor="status">Estado</Label>
-              <select id="status" name="status" defaultValue={equipment.status} className="h-9 w-full rounded-none border bg-background px-3 text-sm">
+              <select id="status" name="status" defaultValue={values.status ?? equipment.status} className="h-9 w-full rounded-none border bg-background px-3 text-sm">
                 {Object.entries(statusLabels).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
@@ -175,37 +181,37 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="price_per_hour">Precio/hora</Label>
-              <Input id="price_per_hour" name="price_per_hour" type="number" min="0" step="1" defaultValue={equipment?.price_per_hour} required className="rounded-none" />
+              <Input id="price_per_hour" name="price_per_hour" type="number" min="0" step="1" defaultValue={values.price_per_hour ?? equipment?.price_per_hour} required className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="price_per_day">Precio/dia</Label>
-              <Input id="price_per_day" name="price_per_day" type="number" min="0" step="1" defaultValue={equipment?.price_per_day ?? ""} className="rounded-none" />
+              <Input id="price_per_day" name="price_per_day" type="number" min="0" step="1" defaultValue={values.price_per_day ?? equipment?.price_per_day ?? ""} className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="deposit_amount">Deposito</Label>
-              <Input id="deposit_amount" name="deposit_amount" type="number" min="0" step="1" defaultValue={equipment?.deposit_amount ?? ""} className="rounded-none" />
+              <Input id="deposit_amount" name="deposit_amount" type="number" min="0" step="1" defaultValue={values.deposit_amount ?? equipment?.deposit_amount ?? ""} className="rounded-none" />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="location">Ubicacion</Label>
-              <Input id="location" name="location" defaultValue={equipment?.location} required placeholder="Zona de cobertura" className="rounded-none" />
+              <Input id="location" name="location" defaultValue={values.location ?? equipment?.location} required placeholder="Zona de cobertura" className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="min_rental_hours">Min. horas</Label>
-              <Input id="min_rental_hours" name="min_rental_hours" type="number" min="1" defaultValue={equipment?.min_rental_hours ?? 1} required className="rounded-none" />
+              <Input id="min_rental_hours" name="min_rental_hours" type="number" min="1" defaultValue={values.min_rental_hours ?? equipment?.min_rental_hours ?? 1} required className="rounded-none" />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="city">Ciudad</Label>
-              <Input id="city" name="city" defaultValue={equipment?.city ?? ""} className="rounded-none" />
+              <Input id="city" name="city" defaultValue={values.city ?? equipment?.city ?? ""} className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">Estado</Label>
-              <Input id="state" name="state" defaultValue={equipment?.state ?? ""} className="rounded-none" />
+              <Input id="state" name="state" defaultValue={values.state ?? equipment?.state ?? ""} className="rounded-none" />
             </div>
           </div>
 
@@ -228,7 +234,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
 
       <div className="space-y-6">
         <ScheduleFields rules={equipment?.availability_rules ?? []} />
-        <SubmitButton className="h-11 w-full rounded-none" pendingText="Guardando">
+        <SubmitButton className="h-11 w-full rounded-none" loading={isUploadingImages} pendingText="Publicando">
           {equipment ? "Guardar cambios" : "Publicar oferta"}
         </SubmitButton>
       </div>

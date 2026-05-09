@@ -10,7 +10,7 @@ import type { TablesInsert } from "@/lib/supabase/database.types"
 
 const equipmentSchema = z.object({
   title: z.string().min(4, "Minimo 4 caracteres"),
-  description: z.string().min(20, "Describe usos, capacidad y restricciones"),
+  description: z.string().min(10, "Agrega al menos 10 caracteres"),
   category_id: z.string().uuid("Selecciona una categoria"),
   condition: z.enum(["new", "excellent", "good", "fair", "needs_service"]),
   status: z.enum(["active", "paused", "maintenance", "archived"]).default("active"),
@@ -32,6 +32,23 @@ const timeSchema = z.object({
 function optionalNumber(value: FormDataEntryValue | null) {
   if (!value || value.toString().trim() === "") return null
   return Number(value)
+}
+
+function getEquipmentFormValues(formData: FormData, status = "active") {
+  return {
+    title: String(formData.get("title") ?? ""),
+    description: String(formData.get("description") ?? ""),
+    category_id: String(formData.get("category_id") ?? ""),
+    condition: String(formData.get("condition") ?? "good"),
+    status: String(formData.get("status") ?? status),
+    price_per_hour: String(formData.get("price_per_hour") ?? ""),
+    price_per_day: String(formData.get("price_per_day") ?? ""),
+    deposit_amount: String(formData.get("deposit_amount") ?? ""),
+    min_rental_hours: String(formData.get("min_rental_hours") ?? "1"),
+    location: String(formData.get("location") ?? ""),
+    city: String(formData.get("city") ?? ""),
+    state: String(formData.get("state") ?? ""),
+  }
 }
 
 function getAvailabilityRules(formData: FormData) {
@@ -70,19 +87,13 @@ export async function createEquipmentAction(
     }
     console.log("[createEquipmentAction] Usuario autenticado:", user.id, "rol:", profile?.role)
 
+    const values = getEquipmentFormValues(formData)
     const rawData = {
-      title: formData.get("title"),
-      description: formData.get("description"),
-      category_id: formData.get("category_id"),
-      condition: formData.get("condition"),
-      status: "active",
-      price_per_hour: formData.get("price_per_hour"),
+      ...values,
       price_per_day: optionalNumber(formData.get("price_per_day")),
       deposit_amount: optionalNumber(formData.get("deposit_amount")),
-      min_rental_hours: formData.get("min_rental_hours") || 1,
-      location: formData.get("location"),
-      city: formData.get("city") || null,
-      state: formData.get("state") || null,
+      city: values.city || null,
+      state: values.state || null,
     }
     console.log("[createEquipmentAction] Raw form data:", rawData)
 
@@ -90,7 +101,7 @@ export async function createEquipmentAction(
 
     if (!parsed.success) {
       console.log("[createEquipmentAction] Validacion Zod fallo:", parsed.error.flatten().fieldErrors)
-      return { errors: parsed.error.flatten().fieldErrors }
+      return { errors: parsed.error.flatten().fieldErrors, values }
     }
     console.log("[createEquipmentAction] Datos validados OK")
 
@@ -98,7 +109,7 @@ export async function createEquipmentAction(
     console.log("[createEquipmentAction] Horarios parseados:", rules.length)
     if (rules.length === 0) {
       console.log("[createEquipmentAction] ERROR - 0 horarios disponibles")
-      return { message: "Define al menos un horario disponible." }
+      return { message: "Define al menos un horario disponible.", values }
     }
 
     const payload: TablesInsert<"equipment"> = {
@@ -211,23 +222,17 @@ export async function updateEquipmentAction(
     return { message: "Solo los dueños de maquinaria pueden editar ofertas." }
   }
 
+  const values = getEquipmentFormValues(formData)
   const parsed = equipmentSchema.safeParse({
-    title: formData.get("title"),
-    description: formData.get("description"),
-    category_id: formData.get("category_id"),
-    condition: formData.get("condition"),
-    status: formData.get("status") || "active",
-    price_per_hour: formData.get("price_per_hour"),
+    ...values,
     price_per_day: optionalNumber(formData.get("price_per_day")),
     deposit_amount: optionalNumber(formData.get("deposit_amount")),
-    min_rental_hours: formData.get("min_rental_hours") || 1,
-    location: formData.get("location"),
-    city: formData.get("city") || null,
-    state: formData.get("state") || null,
+    city: values.city || null,
+    state: values.state || null,
   })
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors }
+    return { errors: parsed.error.flatten().fieldErrors, values }
   }
 
   const { error } = await supabase.from("equipment").update(parsed.data).eq("id", equipmentId)
