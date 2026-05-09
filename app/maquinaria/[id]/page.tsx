@@ -32,7 +32,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
           <div className="grid gap-px bg-border sm:grid-cols-4">
             <div className="relative aspect-[16/10] bg-muted sm:col-span-3">
               {images[0] ? (
-                <Image src={images[0].public_url} alt={images[0].alt_text || equipment.title} fill sizes="(min-width: 1024px) 66vw, 100vw" className="object-cover grayscale" />
+                <Image src={images[0].public_url} alt={images[0].alt_text || equipment.title} fill sizes="(min-width: 1024px) 66vw, 100vw" className="object-cover" />
               ) : (
                 <div className="flex aspect-[16/10] items-center justify-center bg-muted font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">Sin imagen</div>
               )}
@@ -40,7 +40,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
             <div className="grid gap-px bg-border">
               {images.slice(1, 4).map((image) => (
                 <div key={image.public_url} className="relative min-h-32 bg-muted">
-                  <Image src={image.public_url} alt={image.alt_text || equipment.title} fill sizes="180px" className="object-cover grayscale" />
+                  <Image src={image.public_url} alt={image.alt_text || equipment.title} fill sizes="180px" className="object-cover" />
                 </div>
               ))}
             </div>

@@ -31,7 +31,7 @@ export default async function DashboardEquipmentPage() {
         {equipment.map((item) => (
           <div key={item.id} className="grid gap-4 bg-background p-4 md:grid-cols-[120px_1fr_auto] md:items-center">
             <div className="relative aspect-[4/3] bg-muted">
-              {item.equipment_images[0] ? <Image src={item.equipment_images[0].public_url} alt={item.title} fill sizes="120px" className="object-cover grayscale" /> : null}
+              {item.equipment_images[0] ? <Image src={item.equipment_images[0].public_url} alt={item.title} fill sizes="120px" className="object-cover" /> : null}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">

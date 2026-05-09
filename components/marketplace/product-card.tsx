@@ -25,7 +25,7 @@ export function ProductCard({ equipment }: ProductCardProps) {
               alt={image.alt_text || equipment.title}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover grayscale"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">

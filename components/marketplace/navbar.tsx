@@ -48,7 +48,7 @@ export function Navbar({ user, profile }: NavbarProps) {
               <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
                 Login
               </Link>
-              <Link href="/registro" className={cn(buttonVariants({ size: "sm" }))}>
+              <Link href="/registro" className={cn(buttonVariants({ size: "sm" }), "rounded-none")}>
                 Registro
               </Link>
             </>
