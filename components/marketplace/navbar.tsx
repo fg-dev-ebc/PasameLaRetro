@@ -49,7 +49,7 @@ export function Navbar({ user, profile }: NavbarProps) {
             </>
           ) : (
             <>
-              <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
+              <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "rounded-none") }>
                 Login
               </Link>
               <Link href="/registro" className={cn(buttonVariants({ size: "sm" }), "rounded-none")}>
