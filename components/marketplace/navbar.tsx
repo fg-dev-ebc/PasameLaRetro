@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Tractor } from "lucide-react"
+import Image from "next/image"
 import { User } from "@supabase/supabase-js"
 
 import { signOutAction } from "@/lib/actions/auth"
@@ -16,11 +16,15 @@ export function Navbar({ user, profile }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex size-8 items-center justify-center rounded-lg border border-foreground bg-foreground text-background">
-            <Tractor className="size-4" />
-          </span>
-          <span className="font-mono text-sm font-semibold tracking-tight">PasameLaRetro</span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/pasamelaretro-navbar.png"
+            alt="Pasame La Retro"
+            width={420}
+            height={96}
+            priority
+            className="-my-8 h-24 w-auto object-contain"
+          />
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">

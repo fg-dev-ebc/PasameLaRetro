@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowUpRight, CalendarCheck, ShieldCheck, Truck } from "lucide-react"
 
 import { ProductGrid } from "@/components/marketplace/product-grid"
@@ -16,38 +17,28 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-24">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">
-              Marketplace de renta de maquinaria
+              Renta de maquinaria sin vueltas
             </p>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.05em] sm:text-6xl lg:text-7xl">
-              Maquinaria disponible, agenda clara, operacion sin friccion.
+              Encuentra la retro, grua o montacargas que tu obra necesita.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              PasameLaRetro conecta dueños de maquinaria con contratistas que necesitan disponibilidad real por horas.
+              Busca equipos cercanos, revisa disponibilidad y agenda directo con el dueño. Menos llamadas, menos esperas, mas obra avanzando.
             </p>
             <div className="mt-10 max-w-2xl">
               <SearchBar large />
             </div>
           </div>
 
-          <div className="grid content-between border bg-muted/20 p-6">
-            <div className="grid grid-cols-2 gap-px bg-border">
-              {[
-                ["Activos", "24/7"],
-                ["Reservas", "Por hora"],
-                ["Agenda", "Validada"],
-                ["Owners", "Verificados"],
-              ].map(([label, value]) => (
-                <div key={label} className="bg-background p-5">
-                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-                  <p className="mt-6 font-mono text-2xl font-semibold">{value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-10 border-t pt-6">
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">Owner flow</p>
-              <p className="mt-3 text-2xl font-semibold tracking-tight">Publica maquinaria con imagenes y disponibilidad variable.</p>
-              <Link href="/publicar" className={cn(buttonVariants(), "mt-6 rounded-none")}>Publicar oferta</Link>
-            </div>
+          <div className="flex items-center justify-center border bg-white p-6">
+            <Image
+              src="/pasamelaretro-logo.png"
+              alt="Pasame La Retro"
+              width={760}
+              height={432}
+              priority
+              className="w-[106%] max-w-none object-contain"
+            />
           </div>
         </div>
       </section>
@@ -92,7 +83,7 @@ export default async function HomePage() {
         <div className="grid gap-px bg-border lg:grid-cols-3">
           {[
             { icon: ShieldCheck, title: "Operacion segura", text: "Dueños y contratistas mantienen control sobre publicaciones, agenda y solicitudes." },
-            { icon: CalendarCheck, title: "Agenda validada", text: "Las reservas pasan por reglas de disponibilidad y bloqueo de solapes." },
+            { icon: CalendarCheck, title: "Agenda validada", text: "Las reservas pasan por bloqueos de reglas de disponibilidad." },
             { icon: Truck, title: "Inventario real", text: "Publicaciones activas, fichas completas y control operativo desde el dashboard." },
           ].map((item) => (
             <div key={item.title} className="bg-background p-6">

@@ -28,7 +28,7 @@ const roleOptions: Array<{
   },
   {
     value: "owner",
-    title: "Dueno de maquinaria",
+    title: "Dueño de maquinaria",
     description: "Publica y renta tus equipos",
     icon: Building2,
   },
