@@ -30,14 +30,14 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center border bg-white p-6">
+          <div className="flex items-center justify-center">
             <Image
-              src="/pasamelaretro-logo.png"
+              src="/pasamelaretro-hero.jpg"
               alt="Pasame La Retro"
               width={760}
               height={432}
               priority
-              className="w-[106%] max-w-none object-contain"
+              className="max-h-[32rem] w-full object-contain"
             />
           </div>
         </div>
