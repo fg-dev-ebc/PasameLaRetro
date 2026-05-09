@@ -1,12 +1,14 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 
-import { createEquipmentAction, updateEquipmentAction } from "@/lib/actions/equipment"
+import { createEquipmentAction, saveEquipmentImagesAction, updateEquipmentAction } from "@/lib/actions/equipment"
 import { initialActionState } from "@/lib/actions/types"
 import { conditionLabels, statusLabels, weekdays } from "@/lib/constants"
 import type { EquipmentDetailRecord } from "@/lib/queries"
 import type { Tables } from "@/lib/supabase/database.types"
+import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,8 +21,12 @@ type ProductFormProps = {
 }
 
 export function ProductForm({ categories, equipment }: ProductFormProps) {
+  const router = useRouter()
   const action = equipment ? updateEquipmentAction.bind(null, equipment.id) : createEquipmentAction
   const [state, formAction] = useActionState(action, initialActionState)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [uploadMessage, setUploadMessage] = useState<string>()
+  const uploadedEquipmentId = useRef<string | null>(null)
 
   const modeLabel = equipment ? "edicion" : "creacion"
   console.log(`[ProductForm] Render - Modo: ${modeLabel}`, equipment ? { id: equipment.id } : "nuevo")
@@ -31,6 +37,72 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
   if (state.errors) {
     console.log("[ProductForm] Errores de validacion:", JSON.stringify(state.errors))
   }
+
+  useEffect(() => {
+    if (equipment || !state.ok || !state.equipmentId || uploadedEquipmentId.current === state.equipmentId) return
+
+    uploadedEquipmentId.current = state.equipmentId
+
+    async function uploadImages() {
+      const equipmentId = state.equipmentId
+      if (!equipmentId) return
+
+      if (imageFiles.length === 0) {
+        router.push(`/maquinaria/${equipmentId}`)
+        router.refresh()
+        return
+      }
+
+      setUploadMessage("Subiendo imagenes...")
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        setUploadMessage("La maquinaria se publico, pero la sesion expiro antes de subir imagenes.")
+        return
+      }
+
+      const uploadedImages = []
+
+      for (const [position, file] of imageFiles.slice(0, 8).entries()) {
+        if (file.size > 10 * 1024 * 1024) {
+          setUploadMessage("Cada imagen debe pesar maximo 10 MB.")
+          return
+        }
+
+        const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg"
+        const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+        const path = `${user.id}/${equipmentId}/${uniqueId}.${fileExt}`
+        const { error } = await supabase.storage.from("equipment-images").upload(path, file, { upsert: false })
+
+        if (error) {
+          setUploadMessage("La maquinaria se publico, pero no pudimos subir todas las imagenes.")
+          return
+        }
+
+        const { data } = supabase.storage.from("equipment-images").getPublicUrl(path)
+        uploadedImages.push({
+          path,
+          public_url: data.publicUrl,
+          alt_text: file.name,
+          position,
+        })
+      }
+
+      const imageState = await saveEquipmentImagesAction(equipmentId, uploadedImages)
+      if (!imageState.ok) {
+        setUploadMessage(imageState.message ?? "La maquinaria se publico, pero no pudimos guardar las imagenes.")
+        return
+      }
+
+      router.push(`/maquinaria/${equipmentId}`)
+      router.refresh()
+    }
+
+    uploadImages()
+  }, [equipment, imageFiles, router, state.equipmentId, state.ok])
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const form = e.currentTarget
@@ -57,7 +129,7 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           <CardTitle>Ficha tecnica</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-5 p-5">
-          <FormMessage message={state.message} />
+          <FormMessage message={uploadMessage ?? state.message} />
           <div className="space-y-2">
             <Label htmlFor="title">Titulo</Label>
             <Input id="title" name="title" defaultValue={equipment?.title} required placeholder="Excavadora 320 GC lista para obra" className="rounded-none" />
@@ -142,10 +214,10 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
               <Label htmlFor="images">Imagenes</Label>
               <Input
                 id="images"
-                name="images"
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/avif"
                 multiple
+                onChange={(event) => setImageFiles(Array.from(event.target.files ?? []).slice(0, 8))}
                 className="rounded-none file:mr-3 file:bg-foreground file:px-3 file:text-background file:hover:bg-foreground/90"
               />
               <p className="font-mono text-xs text-muted-foreground">Hasta 8 archivos. Maximo 10 MB por imagen.</p>

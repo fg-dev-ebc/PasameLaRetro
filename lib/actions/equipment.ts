@@ -5,7 +5,6 @@ import { redirect } from "next/navigation"
 import { z } from "zod"
 
 import type { ActionState } from "@/lib/actions/types"
-import { normalizeFileName } from "@/lib/format"
 import { createClient } from "@/lib/supabase/server"
 import type { TablesInsert } from "@/lib/supabase/database.types"
 
@@ -46,13 +45,6 @@ function getAvailabilityRules(formData: FormData) {
       end_time: formData.get(`end_${weekday}`),
     })
   }).filter((rule): rule is z.infer<typeof timeSchema> => Boolean(rule))
-}
-
-function getImageFiles(formData: FormData) {
-  return formData
-    .getAll("images")
-    .filter((file): file is File => file instanceof File && file.size > 0)
-    .slice(0, 8)
 }
 
 export async function createEquipmentAction(
@@ -150,49 +142,10 @@ export async function createEquipmentAction(
     }
     console.log("[createEquipmentAction] Horarios guardados OK")
 
-    const files = getImageFiles(formData)
-    console.log("[createEquipmentAction] Imagenes a procesar:", files.length)
-    const imageRows: TablesInsert<"equipment_images">[] = []
-
-    for (const [position, file] of files.entries()) {
-      const fileExt = file.name.split(".").pop()
-      const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-      const path = `${user.id}/${equipment.id}/${uniqueId}.${fileExt}`
-      console.log("[createEquipmentAction] Subiendo imagen:", path, "size:", file.size)
-
-      const { error: uploadError } = await supabase.storage
-        .from("equipment-images")
-        .upload(path, file, { upsert: false })
-
-      if (uploadError) {
-        console.log("[createEquipmentAction] Upload fallo:", JSON.stringify(uploadError))
-        continue
-      }
-
-      const { data } = supabase.storage.from("equipment-images").getPublicUrl(path)
-      imageRows.push({
-        equipment_id: equipment.id,
-        path,
-        public_url: data.publicUrl,
-        alt_text: parsed.data.title,
-        position,
-      })
-    }
-
-    if (imageRows.length > 0) {
-      console.log("[createEquipmentAction] Insertando", imageRows.length, "registros de imagenes")
-      const { error: imgInsertError } = await supabase.from("equipment_images").insert(imageRows)
-      if (imgInsertError) {
-        console.log("[createEquipmentAction] ERROR insert imagenes:", JSON.stringify(imgInsertError))
-      } else {
-        console.log("[createEquipmentAction] Imagenes guardadas OK")
-      }
-    }
-
-    console.log("[createEquipmentAction] TODO OK - redirigiendo a /maquinaria/" + equipment.id)
+    console.log("[createEquipmentAction] TODO OK - equipo listo para imagenes: " + equipment.id)
     revalidatePath("/")
     revalidatePath("/catalogo")
-    redirect(`/maquinaria/${equipment.id}`)
+    return { ok: true, equipmentId: equipment.id }
   } catch (err) {
     const errObj = err as { digest?: string; message?: string }
     if (errObj?.digest?.startsWith("NEXT_REDIRECT") || errObj?.message === "NEXT_REDIRECT") throw err
@@ -200,6 +153,46 @@ export async function createEquipmentAction(
     console.log("[createEquipmentAction] Stack:", err instanceof Error ? err.stack : "---")
     return { message: "Error inesperado al publicar. Revisa la consola del servidor." }
   }
+}
+
+export async function saveEquipmentImagesAction(
+  equipmentId: string,
+  images: Array<{ path: string; public_url: string; alt_text: string; position: number }>
+): Promise<ActionState> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { message: "Inicia sesion para subir imagenes." }
+
+  const { data: equipment } = await supabase
+    .from("equipment")
+    .select("id, owner_id")
+    .eq("id", equipmentId)
+    .single()
+
+  if (!equipment || equipment.owner_id !== user.id) {
+    return { message: "No puedes modificar imagenes de esta maquinaria." }
+  }
+
+  const rows: TablesInsert<"equipment_images">[] = images.slice(0, 8).map((image) => ({
+    equipment_id: equipmentId,
+    path: image.path,
+    public_url: image.public_url,
+    alt_text: image.alt_text,
+    position: image.position,
+  }))
+
+  if (rows.length === 0) return { ok: true }
+
+  const { error } = await supabase.from("equipment_images").insert(rows)
+  if (error) return { message: "La maquinaria se publico, pero no pudimos guardar las imagenes." }
+
+  revalidatePath("/")
+  revalidatePath("/catalogo")
+  revalidatePath(`/maquinaria/${equipmentId}`)
+  return { ok: true }
 }
 
 export async function updateEquipmentAction(
