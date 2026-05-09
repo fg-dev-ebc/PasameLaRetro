@@ -140,7 +140,14 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           {!equipment ? (
             <div className="space-y-2">
               <Label htmlFor="images">Imagenes</Label>
-              <Input id="images" name="images" type="file" accept="image/png,image/jpeg,image/webp,image/avif" multiple />
+              <Input
+                id="images"
+                name="images"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/avif"
+                multiple
+                className="rounded-none file:mr-3 file:bg-foreground file:px-3 file:text-background file:hover:bg-foreground/90"
+              />
               <p className="font-mono text-xs text-muted-foreground">Hasta 8 archivos. Maximo 10 MB por imagen.</p>
             </div>
           ) : null}
