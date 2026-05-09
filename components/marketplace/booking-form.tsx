@@ -16,11 +16,13 @@ import { cn } from "@/lib/utils"
 type BookingFormProps = {
   equipmentId: string
   isAuthenticated: boolean
+  userRole?: string | null
 }
 
-export function BookingForm({ equipmentId, isAuthenticated }: BookingFormProps) {
+export function BookingForm({ equipmentId, isAuthenticated, userRole }: BookingFormProps) {
   const [state, formAction] = useActionState(createBookingAction, initialActionState)
   const today = new Date().toISOString().slice(0, 10)
+  const isOwner = userRole === "owner"
 
   return (
     <Card className="rounded-none ring-0">
@@ -28,7 +30,9 @@ export function BookingForm({ equipmentId, isAuthenticated }: BookingFormProps) 
         <CardTitle>Agendar maquinaria</CardTitle>
       </CardHeader>
       <CardContent className="p-5">
-        {isAuthenticated ? (
+        {isOwner ? (
+          <p className="text-sm text-muted-foreground">Los dueños de maquinaria no pueden agendar. Usa una cuenta de contratista.</p>
+        ) : isAuthenticated ? (
           <form action={formAction} className="space-y-4">
             <input type="hidden" name="equipment_id" value={equipmentId} />
             {state.message ? <p className="text-sm text-destructive">{state.message}</p> : null}

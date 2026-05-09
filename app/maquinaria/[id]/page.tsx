@@ -22,7 +22,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
 
   if (!equipment || equipment.status !== "active") notFound()
 
-  const [{ user }, related] = await Promise.all([getCurrentUserProfile(), getRelatedEquipment(equipment)])
+  const [{ user, profile }, related] = await Promise.all([getCurrentUserProfile(), getRelatedEquipment(equipment)])
   const images = equipment.equipment_images
 
   return (
@@ -124,7 +124,7 @@ export default async function EquipmentPage({ params }: EquipmentPageProps) {
             </CardContent>
           </Card>
 
-          <BookingForm equipmentId={equipment.id} isAuthenticated={Boolean(user)} />
+          <BookingForm equipmentId={equipment.id} isAuthenticated={Boolean(user)} userRole={profile?.role} />
         </aside>
       </div>
 

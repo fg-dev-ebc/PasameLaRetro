@@ -22,7 +22,7 @@ const signUpSchema = signInSchema.extend({
 
 async function getOrigin() {
   const headerStore = await headers()
-  return headerStore.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  return process.env.NEXT_PUBLIC_SITE_URL ?? headerStore.get("origin") ?? "http://localhost:3000"
 }
 
 export async function signInAction(_state: ActionState, formData: FormData): Promise<ActionState> {
