@@ -60,12 +60,12 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           <FormMessage message={state.message} />
           <div className="space-y-2">
             <Label htmlFor="title">Titulo</Label>
-            <Input id="title" name="title" defaultValue={equipment?.title} required placeholder="Excavadora 320 GC lista para obra" />
+            <Input id="title" name="title" defaultValue={equipment?.title} required placeholder="Excavadora 320 GC lista para obra" className="rounded-none" />
             <FormMessage message={state.errors?.title?.[0]} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Descripcion</Label>
-            <Textarea id="description" name="description" defaultValue={equipment?.description} required rows={7} placeholder="Capacidad, operador incluido, restricciones, mantenimiento y condiciones de entrega." />
+            <Textarea id="description" name="description" defaultValue={equipment?.description} required rows={7} placeholder="Capacidad, operador incluido, restricciones, mantenimiento y condiciones de entrega." className="rounded-none" />
             <FormMessage message={state.errors?.description?.[0]} />
           </div>
 
@@ -103,37 +103,37 @@ export function ProductForm({ categories, equipment }: ProductFormProps) {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="price_per_hour">Precio/hora</Label>
-              <Input id="price_per_hour" name="price_per_hour" type="number" min="0" step="1" defaultValue={equipment?.price_per_hour} required />
+              <Input id="price_per_hour" name="price_per_hour" type="number" min="0" step="1" defaultValue={equipment?.price_per_hour} required className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="price_per_day">Precio/dia</Label>
-              <Input id="price_per_day" name="price_per_day" type="number" min="0" step="1" defaultValue={equipment?.price_per_day ?? ""} />
+              <Input id="price_per_day" name="price_per_day" type="number" min="0" step="1" defaultValue={equipment?.price_per_day ?? ""} className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="deposit_amount">Deposito</Label>
-              <Input id="deposit_amount" name="deposit_amount" type="number" min="0" step="1" defaultValue={equipment?.deposit_amount ?? ""} />
+              <Input id="deposit_amount" name="deposit_amount" type="number" min="0" step="1" defaultValue={equipment?.deposit_amount ?? ""} className="rounded-none" />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="location">Ubicacion</Label>
-              <Input id="location" name="location" defaultValue={equipment?.location} required placeholder="Zona de cobertura" />
+              <Input id="location" name="location" defaultValue={equipment?.location} required placeholder="Zona de cobertura" className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="min_rental_hours">Min. horas</Label>
-              <Input id="min_rental_hours" name="min_rental_hours" type="number" min="1" defaultValue={equipment?.min_rental_hours ?? 1} required />
+              <Input id="min_rental_hours" name="min_rental_hours" type="number" min="1" defaultValue={equipment?.min_rental_hours ?? 1} required className="rounded-none" />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="city">Ciudad</Label>
-              <Input id="city" name="city" defaultValue={equipment?.city ?? ""} />
+              <Input id="city" name="city" defaultValue={equipment?.city ?? ""} className="rounded-none" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">Estado</Label>
-              <Input id="state" name="state" defaultValue={equipment?.state ?? ""} />
+              <Input id="state" name="state" defaultValue={equipment?.state ?? ""} className="rounded-none" />
             </div>
           </div>
 
@@ -180,8 +180,8 @@ function ScheduleFields({ rules }: { rules: Tables<"availability_rules">[] }) {
                 <input type="checkbox" name={`day_${day.value}`} defaultChecked={defaultChecked} className="size-4 accent-foreground" />
                 {day.short}
               </label>
-              <Input name={`start_${day.value}`} type="time" defaultValue={rule?.start_time.slice(0, 5) ?? "08:00"} />
-              <Input name={`end_${day.value}`} type="time" defaultValue={rule?.end_time.slice(0, 5) ?? "17:00"} />
+              <Input name={`start_${day.value}`} type="time" defaultValue={rule?.start_time.slice(0, 5) ?? "08:00"} className="rounded-none" />
+              <Input name={`end_${day.value}`} type="time" defaultValue={rule?.end_time.slice(0, 5) ?? "17:00"} className="rounded-none" />
             </div>
           )
         })}

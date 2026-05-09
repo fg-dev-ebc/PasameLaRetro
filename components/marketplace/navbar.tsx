@@ -44,7 +44,7 @@ export function Navbar({ user, profile }: NavbarProps) {
                 {profile?.company_name || profile?.full_name || user.email}
               </span>
               <form action={signOutAction}>
-                <Button type="submit" variant="outline" size="sm">Salir</Button>
+                <Button type="submit" variant="outline" size="sm" className="rounded-none">Salir</Button>
               </form>
             </>
           ) : (
