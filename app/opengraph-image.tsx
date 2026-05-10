@@ -23,7 +23,7 @@ export default function Image() {
         }}
       >
         <img
-          src="https://pasamelaretro.vercel.app/pasamelaretro-wsp.png"
+          src="https://pasamelaretro.vercel.app/pasamelaretro-logo2.png"
           alt="Pasame La Retro"
           style={{
             maxHeight: "440px",
