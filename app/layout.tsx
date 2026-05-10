@@ -47,9 +47,9 @@ export const metadata: Metadata = {
     siteName: "PasameLaRetro",
     images: [
       {
-        url: "https://pasamelaretro.vercel.app/pasamelaretro-logo2.png",
-        width: 1536,
-        height: 864,
+        url: "https://pasamelaretro.vercel.app/opengraph-image",
+        width: 1200,
+        height: 630,
         alt: "Pasame La Retro",
       },
     ],
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PasameLaRetro | Renta de maquinaria sin vueltas",
     description: "Encuentra maquinaria disponible, revisa horarios y agenda directo con el dueño.",
-    images: ["https://pasamelaretro.vercel.app/pasamelaretro-logo2.png"],
+    images: ["https://pasamelaretro.vercel.app/opengraph-image"],
   },
 };
 
